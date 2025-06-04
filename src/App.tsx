@@ -1,17 +1,34 @@
 import "./App.css"
+import { Controller, useForm } from "react-hook-form"
+
+type FormData = {
+  name: string
+  date: string
+  subject: string
+  description: string
+}
 
 export default function App() {
+  const { control, handleSubmit } = useForm<FormData>({defaultValues: {name: "", date: "", subject: "", description: ""}})
+
+  function onSubmit(data: FormData){
+    console.log(data)
+  }
+
   return (
     <div>
       <h1>Evento</h1>
 
-      <form>
-        <input type="text" placeholder="Nome do evento" onChange={(e)=> e.target.value}/>
+      <form onSubmit={handleSubmit(onSubmit)}>
+        <Controller control={control} name="name" render={({field})=> <input type="text" placeholder="Nome do evento" {...field}/>}/>
+
+        
         <span className="error">Nome é obrigatório</span>
 
-        <input type="date" placeholder="Nome do evento" lang="pt-BR" />
-
-        <select defaultValue="">
+        <Controller control={control} name="date" render={({field})=><input type="date" placeholder="Nome do evento" {...field} />}/>
+        
+        <Controller control={control} name="subject" render={({field})=>(
+          <select defaultValue="" title="tecnologias" {...field}>
           <option value="" disabled>
             Selecione...
           </option>
@@ -21,8 +38,11 @@ export default function App() {
           <option value="business">Javascript</option>
           <option value="business">Typescript</option>
         </select>
+        )} />
 
-        <textarea placeholder="Descrição" rows={4} />
+        <Controller control={control} name="description" render={({field})=> <textarea placeholder="Descrição" rows={4} {...field} />}/>
+
+        
 
         <button type="submit">Salvar</button>
       </form>
